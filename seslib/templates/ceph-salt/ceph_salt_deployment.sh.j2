@@ -107,7 +107,7 @@ stdbuf -o0 ceph-salt -ldebug deploy --non-interactive
 salt -G 'ceph-salt:member' state.apply ceph-salt
 {% endif %}
 
-{% if {{ nodes|length }} == 1 %}
+{% if {{ nodes | length }} == 1 %}
 # single-node cluster
 ceph config set osd osd_crush_chooseleaf_type 0
 {% if {{ total_osds }} < 5 %}
