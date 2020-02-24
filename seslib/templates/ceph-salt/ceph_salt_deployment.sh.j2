@@ -107,6 +107,15 @@ stdbuf -o0 ceph-salt -ldebug deploy --non-interactive
 salt -G 'ceph-salt:member' state.apply ceph-salt
 {% endif %}
 
+{% if {{ nodes|length }} == 1 %}
+# single-node cluster
+ceph config set osd osd_crush_chooseleaf_type 0
+{% if {{ total_osds }} < 5 %}
+ceph config set osd osd_pool_default_size 2
+ceph osd pool set device_health_metrics size 2
+{% endif %}
+{% endif %}
+
 {% if qa_test is defined and qa_test is sameas true %}
 /home/vagrant/sesdev-qa/health-ok.sh --total-nodes={{ nodes|length }} --nfs-ganesha-nodes={{ ganesha_nodes }} --igw-nodes={{ igw_nodes }} --mds-nodes={{ mds_nodes }} --mgr-nodes={{ mgr_nodes }} --mon-nodes={{ mon_nodes }} --osd-nodes={{ storage_nodes }} --osds={{ total_osds }} --rgw-nodes={{ rgw_nodes }}
 {% endif %}
