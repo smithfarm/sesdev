@@ -26,6 +26,13 @@ su {{ makecheck_username }} -c 'git clone --branch {{ makecheck_ceph_branch }} -
 {% if makecheck_stop_before_install_deps %}
 exit 0
 {% endif %}
+# KLUDGE - REMOVE AFTER valgrind-devel IS GONE FROM INTERNAL MEDIA
+# KLUDGE - REMOVE AFTER valgrind-devel IS GONE FROM INTERNAL MEDIA
+zypper --non-interactive install hwloc-devel libcryptopp-devel ragel
+zypper rr makecheck-repo2
+zypper --gpg-auto-import-keys refresh
+# KLUDGE - REMOVE AFTER valgrind-devel IS GONE FROM INTERNAL MEDIA
+# KLUDGE - REMOVE AFTER valgrind-devel IS GONE FROM INTERNAL MEDIA
 su {{ makecheck_username }} -c 'cd /home/{{ makecheck_username }}/ceph ; sed -i -e "s/^set -e$/set -ex/" install-deps.sh ; FOR_MAKE_CHECK=true ./install-deps.sh'
 
 {% if makecheck_stop_before_run_make_check %}
