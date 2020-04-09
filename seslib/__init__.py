@@ -267,8 +267,8 @@ VERSION_OS_REPO_MAPPING = {
         'sles-12-sp3': [
             'http://download.suse.de/ibs/Devel:/Storage:/5.0/images/repo/'
             'SUSE-Enterprise-Storage-5-POOL-x86_64-Media1/',
-        #     'http://download.suse.de/ibs/Devel:/Storage:/5.0/images/repo/'
-        #     'SUSE-Enterprise-Storage-5-POOL-Internal-x86_64-Media/',
+            'http://download.suse.de/ibs/Devel:/Storage:/5.0/images/repo/'
+            'SUSE-Enterprise-Storage-5-POOL-Internal-x86_64-Media/',
         ],
         'sles-15-sp1': [
             'http://download.suse.de/ibs/Devel:/Storage:/6.0/images/repo/'
