@@ -37,6 +37,7 @@ exit 0
 #
 {% if os == "sles-12-sp3" %}
 zypper --non-interactive install --from storage-update --force python-base python-xml
+zypper --non-interactive install --from update --force libncurses5 libncurses6
 {% endif %}
 # KLUDGES
 su {{ makecheck_username }} -c 'cd /home/{{ makecheck_username }}/ceph ; sed -i -e "s/^set -e$/set -ex/" install-deps.sh ; FOR_MAKE_CHECK=true ./install-deps.sh'
