@@ -17,8 +17,8 @@ from . import tools
 from .exceptions import DeploymentDoesNotExists, VersionOSNotSupported, SettingTypeError, \
                         VagrantBoxDoesNotExist, NodeDoesNotExist, NoSourcePortForPortForwarding, \
                         ServicePortForwardingNotSupported, DeploymentAlreadyExists, \
-                        ServiceNotFound, ExclusiveRoles, RoleNotSupported, CmdException, \
-                        VagrantSshConfigNoHostName, ScpInvalidSourceOrDestination, \
+                        ServiceNotFound, ExclusiveRoles, RoleNotKnown, RoleNotSupported, \
+                        CmdException, VagrantSshConfigNoHostName, ScpInvalidSourceOrDestination, \
                         UniqueRoleViolation, SettingNotKnown, SupportconfigOnlyOnSLE, \
                         NoPrometheusGrafanaInSES5
 
@@ -132,6 +132,26 @@ VERSION_PREFERRED_DEPLOYMENT_TOOL = {
     'octopus': 'cephadm',
     'pacific': 'cephadm'
 }
+
+KNOWN_ROLES = [
+    "admin",
+    "bootstrap",
+    "ganesha",
+    "grafana",
+    "igw",
+    "loadbalancer",
+    "makecheck",
+    "master",
+    "mds",
+    "mgr",
+    "mon",
+    "openattic",
+    "prometheus",
+    "rgw",
+    "storage",
+    "suma",
+    "worker",
+]
 
 LUMINOUS_DEFAULT_ROLES = [["master", "client", "prometheus", "grafana", "openattic"],
                           ["storage", "mon", "mgr", "rgw", "igw"],
@@ -734,7 +754,17 @@ class Node():
         self.repo_priority = repo_priority
 
     def has_role(self, role):
+        if role not in KNOWN_ROLES:
+            raise RoleNotKnown(role)
         return role in self.roles
+
+    def has_roles(self):
+        return bool(self.roles)
+
+    def has_exclusive_role(self, role):
+        if role not in KNOWN_ROLES:
+            raise RoleNotKnown(role)
+        return self.roles == [role]
 
     def add_repo(self, repo):
         if self.repo_priority:
@@ -773,24 +803,11 @@ class Deployment():
         self.dep_id = dep_id
         self.settings = settings
         self.nodes = {}
-        self.node_counts = {
-            "admin": 0,
-            "bootstrap": 0,
-            "ganesha": 0,
-            "grafana": 0,
-            "igw": 0,
-            "loadbalancer": 0,
-            "master": 0,
-            "mds": 0,
-            "mgr": 0,
-            "mon": 0,
-            "openattic": 0,
-            "prometheus": 0,
-            "rgw": 0,
-            "storage": 0,
-            "suma": 0,
-            "worker": 0,
-        }
+        self.node_counts = {}
+        for role in KNOWN_ROLES:
+            self.node_counts[role] = 0
+        log_msg = "node_counts: {}".format(self.node_counts)
+        logger.debug(log_msg)
         self.master = None
         self.suma = None
         self.box = Box(settings)
@@ -879,8 +896,10 @@ class Deployment():
         loadbl_id = 0
         storage_id = 0
         for node_roles in self.settings.roles:  # loop once for every node in cluster
-            for role_type in ["admin", "master", "bootstrap", "ganesha", "igw", "mds",
-                              "mgr", "mon", "rgw", "storage"]:
+            for role in node_roles:
+                if role not in KNOWN_ROLES:
+                    raise RoleNotKnown(role)
+            for role_type in KNOWN_ROLES:
                 if role_type in node_roles:
                     self.node_counts[role_type] += 1
 
