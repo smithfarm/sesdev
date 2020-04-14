@@ -895,6 +895,9 @@ class Deployment():
         storage_id = 0
         loadbl_id = 0
         storage_id = 0
+        log_msg = ("_generate_nodes: about to process cluster roles: {}"
+                   .format(self.settings.roles))
+        logger.debug(log_msg)
         for node_roles in self.settings.roles:  # loop once for every node in cluster
             for role in node_roles:
                 if role not in KNOWN_ROLES:
