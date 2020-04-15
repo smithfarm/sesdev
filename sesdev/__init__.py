@@ -788,8 +788,6 @@ def _maybe_glob_deps(deployment_id):
 @click.argument('deployment_id')
 @click.option('--non-interactive', '-n', '--force', '-f',
               is_flag=True,
-              callback=_abort_if_false,
-              expose_value=False,
               help='Allow to destroy the deployment without user confirmation',
               )
 @click.option('--destroy-networks', is_flag=True, default=False,
