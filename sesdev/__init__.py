@@ -791,17 +791,28 @@ def _maybe_glob_deps(deployment_id):
               callback=_abort_if_false,
               expose_value=False,
               help='Allow to destroy the deployment without user confirmation',
-              prompt='Are you sure you want to destroy the cluster?',
               )
 @click.option('--destroy-networks', is_flag=True, default=False,
               help='Allow to destroy networks associated with the deployment')
-def destroy(deployment_id, destroy_networks):
+def destroy(deployment_id, non_interactive, destroy_networks):
     """
     Destroys the deployment(s) named DEPLOYMENT_SPEC -- where DEPLOYMENT_SPEC might
     be either a literal deployment ID or a glob ("octopus_*") -- by destroying the
     VMs and deleting the deployment directory.
     """
     matching_deployments = _maybe_glob_deps(deployment_id)
+    cluster_word = ""
+    if len(matching_deployments) == 1:
+        cluster_word = "cluster"
+    else:
+        cluster_word = "clusters"
+    if not non_interactive:
+        really_want_to = click.confirm(
+            'Do you really want to destroy {} {}'.format(len(matching_deployments), cluster_word),
+            default=True,
+            )
+        if not really_want_to:
+            raise click.Abort()
     for dep in matching_deployments:
         logger.debug("destroy deployment: '%s', destroy networks: %s",
                      deployment_id,
