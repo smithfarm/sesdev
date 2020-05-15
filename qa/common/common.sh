@@ -544,3 +544,19 @@ function number_of_nodes_actual_vs_expected_test {
         false
     fi
 }
+
+function maybe_try_connecting_to_port_80_on_rgw_nodes {
+    local success
+    success="not_empty_value"
+    echo
+    echo "WWWW: maybe_try_connecting_to_port_80_on_rgw_nodes"
+    if [ "$RGW_NODES" ] ; then
+
+    else
+        echo
+        echo "No RGW nodes in the cluster. Skipping."
+        echo
+        echo "maybe_try_connecting_to_port_80_on_rgw_nodes: SKIPPED"
+        echo
+    fi
+}
