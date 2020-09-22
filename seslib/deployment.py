@@ -535,6 +535,13 @@ class Deployment():  # use Deployment.create() to create a Deployment object
             'bootstrap_mon_ip': self.bootstrap_mon_ip,
             'msgr2_secure_mode': self.settings.msgr2_secure_mode,
             'msgr2_prefer_secure': self.settings.msgr2_prefer_secure,
+            'rgw_realm': self.settings.rgw_realm,
+            'rgw_zonegroup': self.settings.rgw_zonegroup,
+            'rgw_zone': self.settings.rgw_zone,
+            'rgw_access_key': self.settings.rgw_access_key,
+            'rgw_secret': self.settings.rgw_secret,
+            'rgw_uid': self.settings.rgw_uid,
+            'rgw_display_name': self.settings.rgw_display_name,
         }
 
         scripts = {}

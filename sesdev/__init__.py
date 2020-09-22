@@ -103,6 +103,22 @@ def ceph_salt_options(func):
                      help='enable "ms_*_mode" options to secure'),
         click.option('--msgr2-prefer-secure', is_flag=True, default=False,
                      help='enable "ms_*_mode" to prefer secure (change to "secure crc")'),
+        click.option('--rgw-realm', default='default',
+                     help='Ceph Object Gateway Realm to create if "rgw" role present'),
+        click.option('--rgw-zonegroup', default='default',
+                     help='Ceph Object Gateway Zone Group to create if "rgw" role present'),
+        click.option('--rgw-zone', default='default',
+                     help='Ceph Object Gateway Zone to create if "rgw" role present'),
+        click.option('--rgw-access-key', default=None,
+                     help='Zone Access Key to use when creating Zone Group, Zone, and '
+                          'RGW system user'
+                    ),
+        click.option('--rgw-secret', default=None,
+                     help='Secret to use together with the Zone Access Key'),
+        click.option('--rgw-uid', default=None,
+                     help='UID (username) of the RGW system user'),
+        click.option('--rgw-display-name', default=None,
+                     help='Display name of the RGW system user'),
     ]
     return _decorator_composer(click_options, func)
 
@@ -527,6 +543,13 @@ def _gen_settings_dict(
         ram=None,
         repo=None,
         repo_priority=None,
+        rgw_realm=None,
+        rgw_zonegroup=None,
+        rgw_zone=None,
+        rgw_access_key=None,
+        rgw_secret=None,
+        rgw_uid=None,
+        rgw_display_name=None,
         roles=None,
         salt=None,
         scc_pass=None,
@@ -764,10 +787,32 @@ def _gen_settings_dict(
             raise OptionFormatError('--synced-folder', "src:dst", folder) from exc
     settings_dict['synced_folder'] = [folder.split(':') for folder in synced_folder]
 
-    if msgr2_secure_mode:
-        settings_dict['msgr2_secure_mode'] = True
-    if msgr2_prefer_secure:
-        settings_dict['msgr2_prefer_secure'] = True
+    if msgr2_secure_mode is not None:
+        settings_dict['msgr2_secure_mode'] = msgr2_secure_mode
+
+    if msgr2_prefer_secure is not None:
+        settings_dict['msgr2_prefer_secure'] = msgr2_secure_mode
+
+    if rgw_realm is not None:
+        settings_dict['rgw_realm'] = rgw_realm
+
+    if rgw_zonegroup is not None:
+        settings_dict['rgw_zonegroup'] = rgw_zonegroup
+
+    if rgw_zone is not None:
+        settings_dict['rgw_zone'] = rgw_zone
+
+    if rgw_access_key is not None:
+        settings_dict['rgw_access_key'] = rgw_access_key
+
+    if rgw_secret is not None:
+        settings_dict['rgw_secret'] = rgw_secret
+
+    if rgw_uid is not None:
+        settings_dict['rgw_uid'] = rgw_uid
+
+    if rgw_display_name is not None:
+        settings_dict['rgw_display_name'] = rgw_display_name
 
     return settings_dict
 

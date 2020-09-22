@@ -110,6 +110,15 @@ SETTINGS = {
         'help': 'paths to container images to be passed to "podman" and "cephadm bootstrap"',
         'default': Constant.IMAGE_PATHS,
     },
+    'ipv6': {
+        'type': bool,
+        'help': 'Configure IPv6 addresses. This option requires "Accept Router '
+                'Advertisements" to be set to 2. You can change it by running '
+                '"sysctl -w net.ipv6.conf.<if>.accept_ra=2" where '
+                '<if> is the network interface used by libvirt for network '
+                'forwarding, or "all" to apply to all interfaces.',
+        'default': False
+    },
     'libvirt_host': {
         'type': str,
         'help': 'Hostname/IP address of the libvirt host',
@@ -205,15 +214,6 @@ SETTINGS = {
         'help': 'Automatically run integration tests on the deployed cluster',
         'default': False,
     },
-    'ipv6': {
-        'type': bool,
-        'help': 'Configure IPv6 addresses. This option requires "Accept Router '
-                'Advertisements" to be set to 2. You can change it by running '
-                '"sysctl -w net.ipv6.conf.<if>.accept_ra=2" where '
-                '<if> is the network interface used by libvirt for network '
-                'forwarding, or "all" to apply to all interfaces.',
-        'default': False
-    },
     'ram': {
         'type': int,
         'help': 'RAM size in gigabytes for each node',
@@ -228,6 +228,42 @@ SETTINGS = {
         'type': list,
         'help': 'DEPRECATED: use custom_repos instead',
         'default': [],
+    },
+    'rgw_realm': {
+        'type': str,
+        'help': 'Ceph Object Gateway Realm to create if "rgw" role present',
+        'default': 'default',
+    },
+    'rgw_zonegroup': {
+        'type': str,
+        'help': 'Ceph Object Gateway Zone Group to create if "rgw" role present',
+        'default': 'default',
+    },
+    'rgw_zone': {
+        'type': str,
+        'help': 'Ceph Object Gateway Zone to create if "rgw" role present',
+        'default': 'default',
+    },
+    'rgw_access_key': {
+        'type': str,
+        'help': 'Zone Access Key to use when creating Zone Group, Zone, and '
+                'RGW system user',
+        'default': '',
+    },
+    'rgw_secret': {
+        'type': str,
+        'help': 'Secret to use together with the Zone Access Key',
+        'default': '',
+    },
+    'rgw_uid': {
+        'type': str,
+        'help': 'UID (username) of the RGW system user',
+        'default': '',
+    },
+    'rgw_display_name': {
+        'type': str,
+        'help': 'Display name of the RGW system user',
+        'default': '',
     },
     'roles': {
         'type': list,
